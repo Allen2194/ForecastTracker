@@ -3324,6 +3324,18 @@ function buildAndPrint(tabIds){
           }
         });
 
+        // u2500 Force-expand Client Headcount panels for print u2500
+        clone.querySelectorAll(".totalhc-clients").forEach(el=>{
+          el.style.display="block";
+          el.style.maxHeight="none";
+          el.style.overflow="visible";
+        });
+        clone.querySelectorAll(".totalhc-chevron").forEach(el=>{el.style.transform="rotate(180deg)";});
+        clone.querySelectorAll(".hc-provider-block").forEach(el=>{el.classList.add("open");});
+        clone.querySelectorAll(".hc-services").forEach(el=>{el.style.display="block";});
+        clone.querySelectorAll(".hc-auth-row").forEach(el=>{el.classList.add("open");});
+        clone.querySelectorAll(".hc-client-list").forEach(el=>{el.style.display="block";});
+
         // ─ Strip interactive/UI-only elements ─
         clone.querySelectorAll('.chart-export-bar,.dash-filter-bar,.btn,.upload-zone,.upload-prompt,.targets-footer,.drill-panel,.modal-overlay,.raw-date-controls,.rpt-pill,.rpt-view-pill,.pm-quick-row,.pm-tab-grid,.pm-footer').forEach(el=>el.remove());
 
@@ -3435,6 +3447,54 @@ function buildAndPrint(tabIds){
 
         /* rpt pills (hide) */
         .rpt-pill,.rpt-view-pill{display:none;}
+
+        /* ═══ CLIENT & PROVIDER TAB — Total HC by Service ═══ */
+        .hc-section{border:1px solid #dde;border-radius:6px;margin-bottom:14px;overflow:visible;page-break-inside:avoid;}
+        .hc-section-header{padding:10px 14px;border-bottom:1px solid #dde;display:flex;align-items:flex-start;justify-content:space-between;background:#f8f9fc;}
+        .hc-section-title{font-size:9pt;font-weight:700;color:#2c6fde;text-transform:uppercase;letter-spacing:.6px;}
+        .hc-section-sub{font-size:7.5pt;color:#777;margin-top:2px;}
+        /* Total HC service cards grid */
+        [id^=totalhc_]{border:1px solid #dde;border-left:3px solid #4f8ef7;border-radius:6px;overflow:visible;margin-bottom:8px;page-break-inside:avoid;cursor:default;}
+        .totalhc-clients{display:block !important;max-height:none !important;overflow:visible !important;border-top:1px solid #eee;padding:8px 12px;background:#fafbfc;}
+        .totalhc-chevron{display:none;}
+        /* Total HC service cards — render as table instead of grid */
+        [id^=totalhc_] > div:first-child{padding:10px 12px;}
+        /* Service card layout inside total hc */
+        /* Provider HC section */
+        .hc-provider-block{border-bottom:1px solid #eee;page-break-inside:avoid;}
+        .hc-provider-block:last-child{border-bottom:none;}
+        .hc-provider-row{padding:8px 14px;display:flex;align-items:center;justify-content:space-between;background:#f8f9fc;cursor:default;}
+        .hc-provider-label{font-size:9pt;font-weight:700;display:flex;align-items:center;gap:6px;}
+        .hc-provider-meta{font-size:8pt;color:#555;display:flex;align-items:center;gap:12px;}
+        .hc-chevron{display:none;}
+        .hc-services{display:block !important;padding:0 14px 12px;}
+        .hc-service-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0;}
+        .hc-service-row:last-child{border-bottom:none;}
+        .hc-service-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+        .hc-service-info{flex:1;}
+        .hc-service-name{font-size:8.5pt;font-weight:700;color:#222;margin-bottom:2px;}
+        .hc-service-meta{font-size:7.5pt;color:#666;display:flex;gap:10px;margin-bottom:4px;}
+        .hc-auth-list{display:flex;flex-direction:column;gap:3px;}
+        .hc-auth-row{border:1px solid #dde;border-radius:4px;overflow:visible;page-break-inside:avoid;}
+        .hc-auth-row.open .hc-client-list{display:block !important;}
+        .hc-auth-trigger{display:flex;align-items:center;justify-content:space-between;padding:5px 9px;background:#f4f6fc;cursor:default;}
+        .hc-auth-code{font-family:'Space Mono',monospace;font-size:8pt;font-weight:700;color:#2c6fde;background:#eef;padding:1px 6px;border-radius:3px;}
+        .hc-auth-meta{font-size:7.5pt;color:#555;display:flex;align-items:center;gap:8px;}
+        .hc-auth-chevron{display:none;}
+        .hc-client-list{display:block !important;padding:6px 10px;background:#fff;border-top:1px solid #eee;}
+        .hc-client-item{display:flex;align-items:center;gap:7px;padding:3px 0;border-bottom:1px solid #f5f5f5;}
+        .hc-client-item:last-child{border-bottom:none;}
+        .hc-client-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+        .hc-client-name{font-size:8pt;color:#111;font-weight:500;flex:1;}
+        .hc-client-units{font-family:'Space Mono',monospace;font-size:7.5pt;color:#555;margin-left:auto;}
+        /* HC badge in service row */
+        .hc-service-hc{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:38px;background:#f0f6ff;border:1px solid #c8d8f0;border-radius:5px;padding:4px 7px;}
+        .hc-service-hc-num{font-family:'Space Mono',monospace;font-size:13pt;font-weight:700;color:#1a6;line-height:1;}
+        .hc-service-hc-lbl{font-size:6.5pt;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-top:1px;}
+        /* Total HC card client list items */
+        .totalhc-clients > div:not(:first-child){display:flex;align-items:center;gap:7px;padding:3px 0;border-bottom:1px solid #f0f0f0;font-size:8pt;}
+        /* Override inline grid on totalhc wrapper — print as stacked cards */
+        .hc-section > div[style*='grid']{display:flex !important;flex-wrap:wrap;gap:8px;padding:12px;}
       `;
 
       win.document.write(`<!DOCTYPE html><html><head>
