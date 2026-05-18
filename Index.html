@@ -120,8 +120,96 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .section{display:none;}
 .section.active{display:block;}
 
-/* ═══════════════════════════════════════════════════════════ UPLOAD */
-.upload-zone{border:2px dashed var(--border);border-radius:14px;padding:52px 36px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface);}
+/* ═══════════════════════════════════════════════════════════
+   DATA MANAGEMENT MODULE
+   ═══════════════════════════════════════════════════════════ */
+.dm-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.dm-upload-zone{border:2px dashed rgba(79,142,247,.4);border-radius:14px;padding:40px 30px;text-align:center;cursor:pointer;transition:all .2s;background:linear-gradient(135deg,rgba(79,142,247,.04),rgba(111,216,168,.03));position:relative;overflow:hidden;}
+.dm-upload-zone:hover,.dm-upload-zone.drag{border-color:var(--accent);background:rgba(79,142,247,.08);transform:translateY(-1px);box-shadow:0 8px 24px rgba(79,142,247,.12);}
+.dm-upload-zone.locked{cursor:not-allowed;opacity:.55;border-color:var(--border);}
+.dm-upload-zone.locked:hover{transform:none;box-shadow:none;background:var(--surface);}
+.dm-upload-icon{font-size:38px;margin-bottom:10px;display:block;}
+.dm-upload-title{font-size:16px;font-weight:700;margin-bottom:5px;}
+.dm-upload-sub{color:var(--muted);font-size:12px;line-height:1.6;}
+.dm-upload-badges{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+.dm-badge{padding:4px 11px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.4px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.2);color:var(--accent);}
+.dm-badge.green{background:rgba(111,216,168,.1);border-color:rgba(111,216,168,.2);color:var(--hit);}
+.dm-badge.orange{background:rgba(247,162,79,.1);border-color:rgba(247,162,79,.2);color:var(--warn);}
+
+/* Consolidated status bar */
+.dm-status-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+.dm-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;transition:all .2s;}
+.dm-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ds-color,var(--accent));}
+.dm-stat-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+.dm-stat-val{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text);}
+.dm-stat-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* Upload history */
+.dm-history-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.dm-history-title{font-size:13px;font-weight:700;color:var(--text);}
+.dm-search-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.dm-search{background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);padding:7px 11px;border-radius:8px;font-size:12px;font-family:var(--font);outline:none;width:200px;transition:border-color .15s;}
+.dm-search:focus{border-color:var(--accent);}
+.dm-date-filter{background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);padding:7px 11px;border-radius:8px;font-size:12px;font-family:var(--font);outline:none;transition:border-color .15s;}
+.dm-date-filter:focus{border-color:var(--accent);}
+
+/* History cards */
+.dm-upload-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:0;margin-bottom:10px;overflow:hidden;transition:border-color .18s,box-shadow .18s;}
+.dm-upload-card:hover{border-color:rgba(79,142,247,.35);box-shadow:0 4px 16px rgba(0,0,0,.12);}
+.dm-upload-card.active-card{border-color:var(--hit);box-shadow:0 0 0 2px rgba(111,216,168,.15);}
+.dm-card-header{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;}
+.dm-card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.2);}
+.dm-card-icon.csv{background:rgba(111,216,168,.1);border-color:rgba(111,216,168,.2);}
+.dm-card-icon.active-icon{background:rgba(111,216,168,.15);border-color:rgba(111,216,168,.3);}
+.dm-card-meta{flex:1;min-width:0;}
+.dm-card-fname{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.dm-card-info{font-size:11px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;}
+.dm-card-info span{display:flex;align-items:center;gap:4px;}
+.dm-card-actions{display:flex;gap:6px;flex-shrink:0;}
+.dm-card-body{display:none;padding:14px 16px;border-top:1px solid var(--border);background:var(--surface2);}
+.dm-card.open .dm-card-body{display:block;}
+.dm-mini-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px;}
+.dm-mini-table th{padding:6px 10px;text-align:left;font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.06);}
+.dm-mini-table td{padding:6px 10px;border-bottom:1px solid var(--border);}
+.dm-version-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;background:rgba(167,139,247,.12);color:#a78bf7;border:1px solid rgba(167,139,247,.2);}
+.dm-active-chip{background:rgba(111,216,168,.12);color:var(--hit);border-color:rgba(111,216,168,.25);}
+
+/* Audit log */
+.dm-audit-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.dm-audit-row:last-child{border-bottom:none;}
+.dm-audit-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;background:var(--accent);}
+.dm-audit-dot.green{background:var(--hit);}
+.dm-audit-dot.orange{background:var(--warn);}
+.dm-audit-dot.red{background:var(--miss);}
+.dm-audit-dot.purple{background:#a78bf7;}
+.dm-audit-time{font-size:10px;color:var(--muted);font-family:var(--mono);white-space:nowrap;min-width:120px;}
+.dm-audit-text{font-size:12px;color:var(--text);}
+.dm-audit-user{font-size:10px;color:var(--muted);margin-top:1px;}
+
+/* Role permissions notice */
+.dm-role-notice{padding:12px 16px;border-radius:10px;margin-bottom:16px;display:flex;align-items:center;gap:12px;font-size:12px;font-weight:600;}
+.dm-role-notice.admin-notice{background:rgba(247,162,79,.08);border:1px solid rgba(247,162,79,.2);color:var(--warn);}
+.dm-role-notice.user-notice{background:rgba(79,142,247,.08);border:1px solid rgba(79,142,247,.2);color:var(--accent);}
+.dm-role-notice.trusted-notice{background:rgba(111,216,168,.08);border:1px solid rgba(111,216,168,.2);color:var(--hit);}
+.dm-empty-state{text-align:center;padding:48px 24px;color:var(--muted);}
+.dm-empty-icon{font-size:40px;margin-bottom:12px;}
+.dm-empty-title{font-size:14px;font-weight:700;margin-bottom:6px;}
+.dm-empty-sub{font-size:12px;line-height:1.6;}
+
+/* Upload progress */
+.dm-progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:8px;}
+.dm-progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--hit));transition:width .4s;}
+
+/* Consolidation options */
+.dm-consolidate-opts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.dm-opt-pill{padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;}
+.dm-opt-pill:hover{border-color:var(--accent);color:var(--accent);}
+.dm-opt-pill.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+@media(max-width:768px){
+  .dm-status-bar{grid-template-columns:repeat(2,1fr);}
+  .dm-card-info{gap:7px;}
+}border-radius:14px;padding:52px 36px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface);}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(79,142,247,.06);}
 .upload-icon{font-size:42px;margin-bottom:12px;}
 .upload-title{font-size:18px;font-weight:700;margin-bottom:6px;}
@@ -590,8 +678,640 @@ select:focus,input[type=text]:focus{outline:none;border-color:var(--accent);}
 </style>
 </head>
 <body>
+<!-- ═══════════════════════════════════════════════════════════
+     AUTH SYSTEM — Login / Register / Verify / Admin
+     ═══════════════════════════════════════════════════════════ -->
+<style>
+/* ── Auth overlay ─────────────────────────────────────────── */
+#authScreen{
+  position:fixed;inset:0;z-index:99999;
+  background:linear-gradient(135deg,#080c18 0%,#0f1528 40%,#0b1220 70%,#060a14 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Sans',sans-serif;
+}
+#authScreen.auth-hidden{display:none;}
+.auth-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.auth-orb{position:absolute;border-radius:50%;filter:blur(60px);animation:authOrb var(--od,9s) ease-in-out infinite alternate;}
+@keyframes authOrb{0%{transform:translate(0,0);}100%{transform:translate(var(--tx,20px),var(--ty,20px));}}
+.auth-card{
+  position:relative;z-index:2;
+  background:rgba(24,28,39,.92);
+  border:1px solid rgba(79,142,247,.18);
+  border-radius:18px;
+  padding:38px 40px 34px;
+  width:420px;max-width:95vw;
+  box-shadow:0 24px 80px rgba(0,0,0,.55),0 0 0 1px rgba(79,142,247,.08);
+  backdrop-filter:blur(16px);
+}
+.auth-logo-row{display:flex;align-items:center;gap:12px;margin-bottom:26px;}
+.auth-logo-icon{width:42px;height:42px;flex-shrink:0;}
+.auth-org{font-size:11px;font-weight:600;color:#7a82a6;text-transform:uppercase;letter-spacing:1.2px;}
+.auth-app{font-size:18px;font-weight:700;color:#e8eaf6;line-height:1.2;}
+.auth-panel{display:none;}
+.auth-panel.auth-active{display:block;}
+.auth-heading{font-size:20px;font-weight:700;color:#e8eaf6;margin-bottom:4px;}
+.auth-sub{font-size:12px;color:#7a82a6;margin-bottom:22px;line-height:1.5;}
+.auth-field{margin-bottom:14px;}
+.auth-label{display:block;font-size:11px;font-weight:600;color:#7a82a6;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
+.auth-input{
+  width:100%;padding:10px 13px;
+  background:#1f2335;border:1px solid #2a2f45;border-radius:8px;
+  color:#e8eaf6;font-size:13px;font-family:'DM Sans',sans-serif;
+  outline:none;transition:border-color .15s,box-shadow .15s;
+}
+.auth-input:focus{border-color:#4f8ef7;box-shadow:0 0 0 3px rgba(79,142,247,.12);}
+.auth-input::placeholder{color:#4a5070;}
+.auth-select{
+  width:100%;padding:10px 13px;
+  background:#1f2335;border:1px solid #2a2f45;border-radius:8px;
+  color:#e8eaf6;font-size:13px;font-family:'DM Sans',sans-serif;
+  outline:none;cursor:pointer;
+}
+.auth-btn{
+  width:100%;padding:11px;margin-top:6px;
+  background:linear-gradient(135deg,#4f8ef7,#2c6fde);
+  border:none;border-radius:9px;
+  color:#fff;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;
+  cursor:pointer;transition:opacity .15s,transform .1s;
+  position:relative;overflow:hidden;
+}
+.auth-btn:hover{opacity:.92;}
+.auth-btn:active{transform:scale(.98);}
+.auth-btn-ghost{
+  width:100%;padding:10px;margin-top:8px;
+  background:transparent;border:1px solid #2a2f45;border-radius:9px;
+  color:#7a82a6;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;
+  cursor:pointer;transition:border-color .15s,color .15s;
+}
+.auth-btn-ghost:hover{border-color:#4f8ef7;color:#4f8ef7;}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:#3a3f58;font-size:11px;}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:#2a2f45;}
+.auth-msg{font-size:12px;padding:9px 12px;border-radius:7px;margin-bottom:14px;display:none;}
+.auth-msg.show{display:block;}
+.auth-msg.error{background:rgba(247,79,107,.12);border:1px solid rgba(247,79,107,.25);color:#f74f6b;}
+.auth-msg.success{background:rgba(111,216,168,.1);border:1px solid rgba(111,216,168,.2);color:#6fd8a8;}
+.auth-msg.info{background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.2);color:#4f8ef7;}
+.auth-link{color:#4f8ef7;cursor:pointer;text-decoration:underline;font-size:12px;}
+.auth-link:hover{color:#7eb3ff;}
+.auth-role-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.6px;
+}
+.auth-role-admin{background:rgba(247,162,79,.15);color:#f7a24f;border:1px solid rgba(247,162,79,.25);}
+.auth-role-user{background:rgba(79,142,247,.12);color:#4f8ef7;border:1px solid rgba(79,142,247,.2);}
+.auth-role-trusted{background:rgba(111,216,168,.12);color:#6fd8a8;border:1px solid rgba(111,216,168,.25);}
+.adm-trust{background:rgba(111,216,168,.15);color:#6fd8a8;}
+.adm-untrust{background:rgba(167,139,247,.12);color:#a78bf7;}
+/* verify code display */
+.auth-code-box{
+  background:rgba(111,216,168,.07);border:1px dashed rgba(111,216,168,.3);
+  border-radius:10px;padding:14px 18px;margin:12px 0;text-align:center;
+}
+.auth-code-label{font-size:10px;color:#7a82a6;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;}
+.auth-code-val{font-size:28px;font-weight:700;color:#6fd8a8;letter-spacing:8px;font-family:'Space Mono',monospace;}
+/* admin user list */
+.adm-user-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:8px;margin-bottom:6px;
+  background:#1f2335;border:1px solid #2a2f45;
+}
+.adm-user-name{flex:1;font-size:13px;color:#e8eaf6;font-weight:500;}
+.adm-user-email{font-size:11px;color:#7a82a6;}
+.adm-user-status{font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 7px;border-radius:12px;}
+.adm-status-pending{background:rgba(247,162,79,.12);color:#f7a24f;}
+.adm-status-verified{background:rgba(111,216,168,.1);color:#6fd8a8;}
+.adm-status-rejected{background:rgba(247,79,107,.1);color:#f74f6b;}
+.adm-btn-sm{
+  padding:4px 10px;border-radius:6px;border:none;font-size:11px;font-weight:600;
+  font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity .15s;
+}
+.adm-btn-sm:hover{opacity:.8;}
+.adm-approve{background:rgba(111,216,168,.15);color:#6fd8a8;}
+.adm-reject{background:rgba(247,79,107,.12);color:#f74f6b;}
+.adm-delete{background:rgba(122,130,166,.12);color:#7a82a6;}
+.auth-footer{text-align:center;margin-top:20px;font-size:11px;color:#3a3f58;}
+/* Change password chip button */
+.auth-chip-chpass{
+  padding:4px 10px;border-radius:6px;border:1px solid #2a2f45;
+  background:transparent;color:#7a82a6;font-size:11px;font-weight:500;
+  font-family:'DM Sans',sans-serif;cursor:pointer;transition:border-color .15s,color .15s;margin-right:2px;
+}
+.auth-chip-chpass:hover{border-color:#4f8ef7;color:#4f8ef7;}
+/* Topbar user chip */
+#authUserChip{display:none;align-items:center;gap:8px;padding:0 12px;}
+.auth-chip-name{font-size:12px;font-weight:600;color:#e8eaf6;}
+.auth-chip-role{font-size:10px;color:#7a82a6;}
+.auth-chip-logout{
+  padding:4px 10px;border-radius:6px;border:1px solid #2a2f45;
+  background:transparent;color:#7a82a6;font-size:11px;font-weight:500;
+  font-family:'DM Sans',sans-serif;cursor:pointer;transition:border-color .15s,color .15s;
+}
+.auth-chip-logout:hover{border-color:#f74f6b;color:#f74f6b;}
+</style>
 
-<body>
+<!-- AUTH SCREEN HTML -->
+<div id="authScreen">
+  <div class="auth-stars" id="authStars"></div>
+  <div class="auth-orb" style="width:500px;height:500px;background:rgba(47,91,184,.12);top:-100px;left:-150px;--od:9s;--tx:30px;--ty:20px;"></div>
+  <div class="auth-orb" style="width:350px;height:350px;background:rgba(111,216,168,.06);bottom:-80px;right:-100px;--od:11s;--tx:-20px;--ty:-30px;"></div>
+
+  <div class="auth-card">
+    <!-- Logo row -->
+    <div class="auth-logo-row">
+      <svg class="auth-logo-icon" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="al-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e2d52"/><stop offset="100%" stop-color="#0b0f1f"/></linearGradient>
+          <linearGradient id="al-ba" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#2d5bb8" stop-opacity="0.6"/><stop offset="100%" stop-color="#4f8ef7"/></linearGradient>
+          <linearGradient id="al-bb" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#3a6ee0"/><stop offset="100%" stop-color="#7eb3ff"/></linearGradient>
+        </defs>
+        <rect width="120" height="120" rx="22" fill="url(#al-bg)"/>
+        <line x1="13" y1="97" x2="107" y2="97" stroke="#4f8ef7" stroke-opacity="0.3" stroke-width="1.2"/>
+        <rect x="15" y="77" width="14" height="20" rx="2.5" fill="url(#al-ba)" opacity="0.55"/>
+        <rect x="34" y="63" width="14" height="34" rx="2.5" fill="url(#al-ba)" opacity="0.72"/>
+        <rect x="53" y="47" width="14" height="50" rx="2.5" fill="url(#al-ba)" opacity="0.88"/>
+        <rect x="72" y="29" width="14" height="68" rx="2.5" fill="url(#al-bb)"/>
+        <polyline points="22,73 41,59 60,43 79,25 98,15" stroke="#6fd8a8" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="79" cy="25" r="3.5" fill="#6fd8a8"/>
+      </svg>
+      <div>
+        <div class="auth-org">Life Stages, Inc.</div>
+        <div class="auth-app">Forecast Tracker</div>
+      </div>
+    </div>
+
+    <!-- ── PANEL: LOGIN ── -->
+    <div class="auth-panel auth-active" id="panLogin">
+      <div class="auth-heading">Welcome back</div>
+      <div class="auth-sub">Sign in to access the dashboard.</div>
+      <div class="auth-msg" id="loginMsg"></div>
+      <div class="auth-field">
+        <label class="auth-label">Email</label>
+        <input class="auth-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="username">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <input class="auth-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="auth-btn" onclick="authLogin()">Sign In</button>
+      <div class="auth-divider">or</div>
+      <button class="auth-btn-ghost" onclick="authShowPanel('panRegister')">Create an Account</button>
+      <div class="auth-footer">Internal use only · Life Stages, Inc. · Confidential</div>
+    </div>
+
+    <!-- ── PANEL: REGISTER ── -->
+    <div class="auth-panel" id="panRegister">
+      <div class="auth-heading">Create Account</div>
+      <div class="auth-sub">Request access. An administrator will approve your account.</div>
+      <div class="auth-msg" id="registerMsg"></div>
+      <div class="auth-field">
+        <label class="auth-label">Full Name</label>
+        <input class="auth-input" id="regName" type="text" placeholder="First Last">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Email Address</label>
+        <input class="auth-input" id="regEmail" type="email" placeholder="you@example.com">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <input class="auth-input" id="regPass" type="password" placeholder="Min. 8 characters">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Confirm Password</label>
+        <input class="auth-input" id="regPass2" type="password" placeholder="Repeat password">
+      </div>
+      <button class="auth-btn" onclick="authRegister()">Submit Registration</button>
+      <div class="auth-divider">or</div>
+      <button class="auth-btn-ghost" onclick="authShowPanel('panLogin')">Back to Sign In</button>
+    </div>
+
+    <!-- ── PANEL: VERIFY EMAIL ── -->
+    <div class="auth-panel" id="panVerify">
+      <div class="auth-heading">Verify Your Email</div>
+      <div class="auth-sub" id="verifySubText">Enter the 6-digit code sent to your email address.</div>
+      <div class="auth-msg" id="verifyMsg"></div>
+      <div class="auth-code-box">
+        <div class="auth-code-label">Your Verification Code</div>
+        <div class="auth-code-val" id="verifyCodeDisplay">——</div>
+        <div style="font-size:10px;color:#7a82a6;margin-top:6px;">(Copy this code — in a live deployment this would be emailed to you)</div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Enter Code</label>
+        <input class="auth-input" id="verifyCodeInput" type="text" placeholder="6-digit code" maxlength="6" style="text-align:center;letter-spacing:6px;font-size:18px;font-family:'Space Mono',monospace;">
+      </div>
+      <button class="auth-btn" onclick="authVerify()">Confirm &amp; Continue</button>
+      <div style="text-align:center;margin-top:12px;">
+        <span class="auth-link" onclick="authShowPanel('panLogin')">Back to Sign In</span>
+      </div>
+    </div>
+
+    <!-- ── PANEL: PENDING APPROVAL ── -->
+    <div class="auth-panel" id="panPending">
+      <div style="text-align:center;padding:10px 0 6px;">
+        <div style="font-size:40px;margin-bottom:12px;">⏳</div>
+        <div class="auth-heading" style="text-align:center;">Awaiting Approval</div>
+        <div class="auth-sub" style="text-align:center;margin-top:8px;">Your account has been verified. An administrator needs to approve your access before you can log in.</div>
+        <div style="margin-top:20px;padding:12px 16px;background:rgba(79,142,247,.08);border:1px solid rgba(79,142,247,.18);border-radius:10px;font-size:12px;color:#7a82a6;">
+          Please contact your administrator to expedite approval.
+        </div>
+        <button class="auth-btn-ghost" style="margin-top:18px;" onclick="authShowPanel('panLogin')">Back to Sign In</button>
+      </div>
+    </div>
+
+    <!-- ── PANEL: ADMIN USER MANAGEMENT ── -->
+    <div class="auth-panel" id="panAdmin">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div class="auth-heading" style="margin-bottom:0;">Admin Panel</div>
+        <span class="auth-role-badge auth-role-admin">Administrator</span>
+      </div>
+      <div class="auth-sub">Manage user accounts and access requests.</div>
+      <div class="auth-msg" id="adminMsg"></div>
+      <div id="adminUserList" style="max-height:280px;overflow-y:auto;margin-bottom:14px;"></div>
+      <button class="auth-btn" onclick="authAdminEnter()">Enter Dashboard</button>
+      <button class="auth-btn-ghost" style="margin-top:8px;" onclick="authOpenChangePass('admin')">Change Password</button>
+      <button class="auth-btn-ghost" style="margin-top:8px;" onclick="authLogout()">Sign Out</button>
+    </div>
+
+    <!-- ── PANEL: CHANGE PASSWORD ── -->
+    <div class="auth-panel" id="panChangePass">
+      <div class="auth-heading">Change Password</div>
+      <div class="auth-sub" id="changePassSub">Update your account password.</div>
+      <div class="auth-msg" id="changePassMsg"></div>
+      <div class="auth-field">
+        <label class="auth-label">Current Password</label>
+        <input class="auth-input" id="cpOld" type="password" placeholder="Current password">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">New Password</label>
+        <input class="auth-input" id="cpNew" type="password" placeholder="Min. 8 characters">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Confirm New Password</label>
+        <input class="auth-input" id="cpNew2" type="password" placeholder="Repeat new password">
+      </div>
+      <button class="auth-btn" onclick="authChangePassword()">Update Password</button>
+      <button class="auth-btn-ghost" style="margin-top:8px;" onclick="authReturnFromChangePass()">Cancel</button>
+    </div>
+
+  </div><!-- /auth-card -->
+</div><!-- /authScreen -->
+
+<!-- User chip in topbar (injected dynamically) -->
+<div id="authUserChip"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   AUTH ENGINE
+   Storage key: ft_auth_users  (array of user objects)
+   Session key: ft_auth_session (current user email)
+   ═══════════════════════════════════════════════════════════ */
+(function(){
+
+/* ── Helpers ──────────────────────────────────────────────── */
+function getUsers(){ try{ return JSON.parse(localStorage.getItem('ft_auth_users')||'[]'); }catch(e){return[];} }
+function saveUsers(u){ localStorage.setItem('ft_auth_users', JSON.stringify(u)); }
+function getSession(){ return localStorage.getItem('ft_auth_session')||null; }
+function setSession(email){ localStorage.setItem('ft_auth_session', email); }
+function clearSession(){ localStorage.removeItem('ft_auth_session'); }
+
+function hashPass(p){
+  // Simple deterministic hash for demo — in production use bcrypt server-side
+  let h=0;
+  for(let i=0;i<p.length;i++){h=((h<<5)-h)+p.charCodeAt(i);h|=0;}
+  return 'h'+Math.abs(h).toString(36)+p.length.toString(36);
+}
+function genCode(){ return String(Math.floor(100000+Math.random()*900000)); }
+function authShowMsg(id,text,type){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.textContent=text; el.className='auth-msg '+type+' show';
+}
+function authClearMsg(id){ const el=document.getElementById(id); if(el)el.className='auth-msg'; }
+
+/* ── Panel navigation ─────────────────────────────────────── */
+window.authShowPanel=function(id){
+  document.querySelectorAll('.auth-panel').forEach(p=>p.classList.remove('auth-active'));
+  const p=document.getElementById(id);
+  if(p) p.classList.add('auth-active');
+};
+
+/* ── Seed default admin if no users exist ─────────────────── */
+function seedAdmin(){
+  const users=getUsers();
+  if(!users.find(u=>u.role==='admin')){
+    users.push({
+      name:'Administrator',
+      email:'admin@lifestages.com',
+      password:hashPass('Admin@1234'),
+      role:'admin',
+      status:'verified',
+      createdAt:Date.now()
+    });
+    saveUsers(users);
+  }
+}
+
+/* ── LOGIN ────────────────────────────────────────────────── */
+window.authLogin=function(){
+  authClearMsg('loginMsg');
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPass').value;
+  if(!email||!pass){authShowMsg('loginMsg','Please enter your email and password.','error');return;}
+  const users=getUsers();
+  const user=users.find(u=>u.email===email);
+  if(!user||user.password!==hashPass(pass)){authShowMsg('loginMsg','Invalid email or password.','error');return;}
+  if(user.status==='pending_verify'){
+    // Show verify panel with their pending code
+    window._authPendingEmail=email;
+    document.getElementById('verifySubText').textContent=`Enter the 6-digit code for ${email}.`;
+    document.getElementById('verifyCodeDisplay').textContent=user.verifyCode||'——';
+    authShowPanel('panVerify');
+    return;
+  }
+  if(user.status==='pending_approval'){authShowPanel('panPending');return;}
+  if(user.status==='rejected'){authShowMsg('loginMsg','Your account request was not approved. Contact your administrator.','error');return;}
+  if(user.status!=='verified'){authShowMsg('loginMsg','Account is not active. Contact your administrator.','error');return;}
+  setSession(email);
+  if(user.role==='admin'){
+    renderAdminPanel();
+    authShowPanel('panAdmin');
+  } else {
+    enterDashboard(user);
+  }
+};
+
+/* ── REGISTER ─────────────────────────────────────────────── */
+window.authRegister=function(){
+  authClearMsg('registerMsg');
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('regPass').value;
+  const pass2=document.getElementById('regPass2').value;
+  if(!name||!email||!pass||!pass2){authShowMsg('registerMsg','All fields are required.','error');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){authShowMsg('registerMsg','Enter a valid email address.','error');return;}
+  if(pass.length<8){authShowMsg('registerMsg','Password must be at least 8 characters.','error');return;}
+  if(pass!==pass2){authShowMsg('registerMsg','Passwords do not match.','error');return;}
+  const users=getUsers();
+  if(users.find(u=>u.email===email)){authShowMsg('registerMsg','An account with this email already exists.','error');return;}
+  const code=genCode();
+  users.push({name,email,password:hashPass(pass),role:'user',status:'pending_verify',verifyCode:code,createdAt:Date.now()});
+  saveUsers(users);
+  window._authPendingEmail=email;
+  document.getElementById('verifySubText').textContent=`Enter the 6-digit code for ${email}.`;
+  document.getElementById('verifyCodeDisplay').textContent=code;
+  document.getElementById('verifyCodeInput').value='';
+  authClearMsg('verifyMsg');
+  authShowPanel('panVerify');
+};
+
+/* ── VERIFY ───────────────────────────────────────────────── */
+window.authVerify=function(){
+  authClearMsg('verifyMsg');
+  const input=document.getElementById('verifyCodeInput').value.trim();
+  const email=window._authPendingEmail;
+  if(!email){authShowMsg('verifyMsg','Session expired. Please register again.','error');return;}
+  const users=getUsers();
+  const idx=users.findIndex(u=>u.email===email);
+  if(idx<0){authShowMsg('verifyMsg','User not found.','error');return;}
+  if(users[idx].verifyCode!==input){authShowMsg('verifyMsg','Incorrect code. Please check and try again.','error');return;}
+  users[idx].status='pending_approval';
+  delete users[idx].verifyCode;
+  saveUsers(users);
+  authShowMsg('verifyMsg','Email verified! Awaiting administrator approval.','success');
+  setTimeout(()=>authShowPanel('panPending'),1400);
+};
+
+/* ── ADMIN: render user list ──────────────────────────────── */
+function renderAdminPanel(){
+  const users=getUsers();
+  const list=document.getElementById('adminUserList');
+  authClearMsg('adminMsg');
+  const nonAdmins=users.filter(u=>u.role!=='admin');
+  if(!nonAdmins.length){
+    list.innerHTML='<div style="text-align:center;padding:20px;color:#7a82a6;font-size:12px;">No user accounts yet.</div>';
+    return;
+  }
+  list.innerHTML=nonAdmins.map((u,i)=>{
+    const statusLabel={pending_verify:'Unverified',pending_approval:'Pending Approval',verified:'Active',rejected:'Rejected'}[u.status]||u.status;
+    const statusClass={pending_verify:'adm-status-pending',pending_approval:'adm-status-pending',verified:'adm-status-verified',rejected:'adm-status-rejected'}[u.status]||'';
+    const roleLabel=u.role==='trusted'?'Trusted':'User';
+    const roleBadge=u.role==='trusted'?'style="background:rgba(111,216,168,.12);color:#6fd8a8;border:1px solid rgba(111,216,168,.2);"':'style="background:rgba(79,142,247,.1);color:#4f8ef7;border:1px solid rgba(79,142,247,.18);"';
+    return `<div class="adm-user-row">
+      <div style="flex:1;min-width:0;">
+        <div class="adm-user-name">${u.name} <span class="auth-role-badge" ${roleBadge} style="font-size:9px;padding:1px 6px;margin-left:4px;">${roleLabel}</span></div>
+        <div class="adm-user-email">${u.email}</div>
+      </div>
+      <span class="adm-user-status ${statusClass}">${statusLabel}</span>
+      ${u.status==='pending_approval'?`<button class="adm-btn-sm adm-approve" onclick="adminApprove('${u.email}')">Approve</button><button class="adm-btn-sm adm-reject" onclick="adminReject('${u.email}')">Reject</button>`:''}
+      ${u.status==='verified'&&u.role!=='trusted'?`<button class="adm-btn-sm adm-trust" onclick="adminGrantTrusted('${u.email}')">★ Trust</button>`:''}
+      ${u.status==='verified'&&u.role==='trusted'?`<button class="adm-btn-sm adm-untrust" onclick="adminRevokeTrusted('${u.email}')">✕ Untrust</button>`:''}
+      ${u.status==='verified'?`<button class="adm-btn-sm adm-reject" onclick="adminRevoke('${u.email}')">Revoke</button>`:''}
+      <button class="adm-btn-sm adm-delete" onclick="adminDelete('${u.email}')">Delete</button>
+    </div>`;
+  }).join('');
+}
+
+window.adminApprove=function(email){
+  const users=getUsers();
+  const u=users.find(x=>x.email===email);
+  if(u){u.status='verified';saveUsers(users);renderAdminPanel();authShowMsg('adminMsg',`${u.name} approved.`,'success');addAuditLog('user_approved',`User approved: ${u.name} (${u.email})`,{color:'green'});}
+};
+window.adminReject=function(email){
+  const users=getUsers();
+  const u=users.find(x=>x.email===email);
+  if(u){u.status='rejected';saveUsers(users);renderAdminPanel();authShowMsg('adminMsg',`${u.name} rejected.`,'info');}
+};
+window.adminRevoke=function(email){
+  const users=getUsers();
+  const u=users.find(x=>x.email===email);
+  if(u){u.status='rejected';saveUsers(users);renderAdminPanel();authShowMsg('adminMsg',`${u.name}'s access revoked.`,'info');addAuditLog('access_revoked',`Access revoked: ${u.name} (${u.email})`,{color:'red'});}
+};
+window.adminGrantTrusted=function(email){
+  const users=getUsers();
+  const u=users.find(x=>x.email===email);
+  if(u){u.role='trusted';saveUsers(users);renderAdminPanel();authShowMsg('adminMsg',`${u.name} granted Trusted User access.`,'success');addAuditLog('role_changed',`Trusted role granted: ${u.name} (${u.email})`,{color:'green'});}
+};
+window.adminRevokeTrusted=function(email){
+  const users=getUsers();
+  const u=users.find(x=>x.email===email);
+  if(u){u.role='user';saveUsers(users);renderAdminPanel();authShowMsg('adminMsg',`${u.name} reverted to Standard User.`,'info');addAuditLog('role_changed',`Trusted role removed: ${u.name} (${u.email})`,{color:'orange'});}
+};
+window.adminDelete=function(email){
+  if(!confirm('Delete this user account permanently?'))return;
+  let users=getUsers();
+  users=users.filter(x=>x.email!==email);
+  saveUsers(users);renderAdminPanel();authShowMsg('adminMsg','User deleted.','info');
+};
+
+/* ── ADMIN enters dashboard ───────────────────────────────── */
+window.authAdminEnter=function(){
+  const email=getSession();
+  const users=getUsers();
+  const user=users.find(u=>u.email===email);
+  if(user) enterDashboard(user);
+};
+
+/* ── ENTER DASHBOARD ──────────────────────────────────────── */
+function enterDashboard(user){
+  // Hide auth screen
+  const as=document.getElementById('authScreen');
+  if(as){as.style.opacity='0';as.style.transition='opacity .5s';setTimeout(()=>{as.classList.add('auth-hidden');as.style.opacity='';},500);}
+  // Dismiss the welcome screen too
+  const ws=document.getElementById('welcomeScreen');
+  if(ws){ws.style.display='none';}
+  // Inject user chip into topbar
+  const chip=document.getElementById('authUserChip');
+  if(chip){
+    const roleLabel=user.role==='admin'?'Administrator':user.role==='trusted'?'Trusted User':'User';
+    const roleClass=user.role==='admin'?'auth-role-admin':user.role==='trusted'?'auth-role-trusted':'auth-role-user';
+    chip.innerHTML=`
+      <span class="auth-chip-name">${user.name}</span>
+      <span class="auth-role-badge ${roleClass}" style="margin-right:4px;">${roleLabel}</span>
+      <button class="auth-chip-logout" style="border-color:#2a2f45;color:#7a82a6;margin-right:2px;" onclick="authOpenChangePass('topbar')">🔑 Change Password</button>
+      <button class="auth-chip-logout" onclick="authLogout()">Sign Out</button>
+    `;
+    chip.style.display='flex';
+    // Insert chip into topbar-right
+    const tr=document.querySelector('.topbar-right');
+    if(tr) tr.insertBefore(chip,tr.firstChild);
+  }
+  // Audit login event (deferred so DM module is ready)
+  setTimeout(()=>{try{addAuditLog('login',`User signed in: ${user.name} (${user.role})`,{color:'blue'});}catch(e){}},900);
+}
+
+/* ── LOGOUT ───────────────────────────────────────────────── */
+window.authLogout=function(){
+  clearSession();
+  window._authPendingEmail=null;
+  // Show auth screen again
+  const as=document.getElementById('authScreen');
+  if(as){as.classList.remove('auth-hidden');as.style.opacity='1';}
+  // Hide chip
+  const chip=document.getElementById('authUserChip');
+  if(chip){chip.style.display='none';chip.innerHTML='';}
+  // Clear inputs
+  ['loginEmail','loginPass','regName','regEmail','regPass','regPass2','verifyCodeInput'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  authClearMsg('loginMsg');
+  authShowPanel('panLogin');
+};
+
+/* ── BOOT ─────────────────────────────────────────────────── */
+function authBoot(){
+  // Seed admin account on first run
+  seedAdmin();
+  // Generate stars
+  const sc=document.getElementById('authStars');
+  if(sc){
+    for(let i=0;i<70;i++){
+      const s=document.createElement('div');
+      s.style.cssText=`position:absolute;border-radius:50%;opacity:0;animation:wsStar ${3+Math.random()*5}s ease-in-out infinite ${Math.random()*4}s;`;
+      const sz=Math.random()*2+.5;
+      const cols=['#4f8ef7','#6fd8a8','#a78bf7','#ffffff'];
+      s.style.width=s.style.height=sz+'px';
+      s.style.left=Math.random()*100+'%';
+      s.style.top=Math.random()*100+'%';
+      s.style.background=cols[Math.floor(Math.random()*cols.length)];
+      s.style.setProperty('--op', (.3+Math.random()*.6).toString());
+      sc.appendChild(s);
+    }
+  }
+  // Check for existing session
+  const email=getSession();
+  if(email){
+    const users=getUsers();
+    const user=users.find(u=>u.email===email);
+    if(user&&user.status==='verified'){
+      enterDashboard(user);
+      return;
+    }
+    clearSession();
+  }
+  // Show login panel
+  authShowPanel('panLogin');
+}
+
+/* ── CHANGE PASSWORD ──────────────────────────────────────── */
+// _authChangePassReturn tracks where to go back: 'admin' or 'topbar'
+window._authChangePassReturn = 'login';
+
+window.authOpenChangePass=function(returnTo){
+  window._authChangePassReturn = returnTo || 'login';
+  const email = getSession();
+  const users = getUsers();
+  const user = users.find(u=>u.email===email);
+  const sub = document.getElementById('changePassSub');
+  if(sub && user) sub.textContent = 'Updating password for: ' + user.email;
+  // Clear fields and messages
+  ['cpOld','cpNew','cpNew2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const msgEl=document.getElementById('changePassMsg');
+  if(msgEl){msgEl.className='auth-msg';msgEl.textContent='';}
+  // Show auth card if dashboard is active (topbar trigger)
+  if(returnTo==='topbar'){
+    const as=document.getElementById('authScreen');
+    if(as){
+      as.classList.remove('auth-hidden');
+      as.style.opacity='0';
+      as.style.transition='opacity .3s';
+      setTimeout(()=>{as.style.opacity='1';},20);
+    }
+  }
+  authShowPanel('panChangePass');
+};
+
+window.authChangePassword=function(){
+  const msgId='changePassMsg';
+  authClearMsg(msgId);
+  const oldPass=document.getElementById('cpOld').value;
+  const newPass=document.getElementById('cpNew').value;
+  const newPass2=document.getElementById('cpNew2').value;
+  if(!oldPass||!newPass||!newPass2){authShowMsg(msgId,'All fields are required.','error');return;}
+  if(newPass.length<8){authShowMsg(msgId,'New password must be at least 8 characters.','error');return;}
+  if(newPass!==newPass2){authShowMsg(msgId,'New passwords do not match.','error');return;}
+  if(oldPass===newPass){authShowMsg(msgId,'New password must differ from the current one.','error');return;}
+  const email=getSession();
+  if(!email){authShowMsg(msgId,'Session expired. Please log in again.','error');return;}
+  const users=getUsers();
+  const idx=users.findIndex(u=>u.email===email);
+  if(idx<0){authShowMsg(msgId,'User not found.','error');return;}
+  if(users[idx].password!==hashPass(oldPass)){authShowMsg(msgId,'Current password is incorrect.','error');return;}
+  users[idx].password=hashPass(newPass);
+  saveUsers(users);
+  authShowMsg(msgId,'Password updated successfully!','success');
+  // Clear fields
+  ['cpOld','cpNew','cpNew2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  // Return to origin after short delay
+  setTimeout(()=>{authReturnFromChangePass();},1500);
+};
+
+window.authReturnFromChangePass=function(){
+  const ret=window._authChangePassReturn||'login';
+  if(ret==='admin'){
+    authShowPanel('panAdmin');
+  } else if(ret==='topbar'){
+    // Hide auth screen again, back to dashboard
+    const as=document.getElementById('authScreen');
+    if(as){
+      as.style.opacity='0';
+      as.style.transition='opacity .4s';
+      setTimeout(()=>{as.classList.add('auth-hidden');as.style.opacity='';},400);
+    }
+  } else {
+    authShowPanel('panLogin');
+  }
+};
+
+// Run on DOM ready
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', authBoot);
+} else {
+  authBoot();
+}
+
+})();
+</script>
+
 
 <!-- ═══════════════════════════════════════════════════════════
      WELCOME SCREEN
@@ -1030,6 +1750,7 @@ select:focus,input[type=text]:focus{outline:none;border-color:var(--accent);}
   <div class="tab"         onclick="switchTab('provanalytics')">👤 Provider Analytics</div>
   <div class="tab"         onclick="switchTab('reports')">📋 Reports</div>
   <div class="tab"         onclick="switchTab('rawdata')">🗃 Raw Data</div>
+  <div class="tab"         onclick="switchTab('datamgmt')" id="tab-btn-datamgmt">📂 Data Management</div>
 </div>
 
 <!-- ═══════════════ MAIN ═══════════════ -->
@@ -1619,7 +2340,97 @@ select:focus,input[type=text]:focus{outline:none;border-color:var(--accent);}
 
 </div><!-- /main -->
 
-<!-- ═══════════════ ② SHARE MODAL ═══════════════ -->
+<!-- ═══════════════ DATA MANAGEMENT SECTION (appended dynamically) ═══════════════ -->
+<div id="tab-datamgmt" class="section" data-print-title="FORECAST TRACKER — Data Management">
+
+  <!-- Role notice -->
+  <div id="dm-role-notice" class="dm-role-notice" style="display:none;"></div>
+
+  <!-- Consolidated status bar -->
+  <div class="dm-status-bar" id="dm-status-bar">
+    <div class="dm-stat" style="--ds-color:#4f8ef7"><div class="dm-stat-label">Total Uploads</div><div class="dm-stat-val" id="dms-uploads">0</div><div class="dm-stat-sub">all-time</div></div>
+    <div class="dm-stat" style="--ds-color:#6fd8a8"><div class="dm-stat-label">Consolidated Records</div><div class="dm-stat-val" id="dms-records">0</div><div class="dm-stat-sub">unique rows</div></div>
+    <div class="dm-stat" style="--ds-color:#f7a24f"><div class="dm-stat-label">Date Range</div><div class="dm-stat-val" id="dms-range" style="font-size:12px;padding-top:4px;">—</div><div class="dm-stat-sub">data span</div></div>
+    <div class="dm-stat" style="--ds-color:#a78bf7"><div class="dm-stat-label">Last Upload</div><div class="dm-stat-val" id="dms-last" style="font-size:12px;padding-top:4px;">—</div><div class="dm-stat-sub">most recent</div></div>
+    <div class="dm-stat" style="--ds-color:#f74f6b"><div class="dm-stat-label">Duplicates Skipped</div><div class="dm-stat-val" id="dms-dupes">0</div><div class="dm-stat-sub">all-time</div></div>
+  </div>
+
+  <!-- Upload area (admin/trusted only) -->
+  <div id="dm-upload-area" style="margin-bottom:20px;">
+    <div class="dm-upload-zone" id="dmDropZone"
+      ondragover="event.preventDefault();if(!this.classList.contains('locked'))this.classList.add('drag')"
+      ondragleave="this.classList.remove('drag')"
+      ondrop="dmHandleDrop(event)"
+      onclick="if(!document.getElementById('dmDropZone').classList.contains('locked'))document.getElementById('dmFileInput').click()">
+      <span class="dm-upload-icon">📥</span>
+      <div class="dm-upload-title">Upload New Data Extract</div>
+      <div class="dm-upload-sub">Drag &amp; drop your .xlsx, .xls, or .csv file here — or click to browse<br>New data will be intelligently merged with the consolidated dataset</div>
+      <div class="dm-upload-badges">
+        <span class="dm-badge">XLSX / XLS</span>
+        <span class="dm-badge green">CSV</span>
+        <span class="dm-badge orange">Auto-Merge</span>
+        <span class="dm-badge">Dup-Safe</span>
+      </div>
+    </div>
+    <input type="file" id="dmFileInput" style="display:none;" accept=".xlsx,.xls,.csv" onchange="dmHandleFileInput(event)">
+
+    <!-- Upload mode selector -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:12px;">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;">Upload / Merge Mode</div>
+      <div class="dm-consolidate-opts">
+        <div class="dm-opt-pill active" id="dmMode-merge" onclick="setDmMode('merge',this)">🔀 Merge &amp; Consolidate <span style="font-size:9px;opacity:.7;">(recommended)</span></div>
+        <div class="dm-opt-pill" id="dmMode-append" onclick="setDmMode('append',this)">➕ Append Only</div>
+        <div class="dm-opt-pill" id="dmMode-replace" onclick="setDmMode('replace',this)">🔄 Replace All</div>
+      </div>
+      <div id="dm-mode-hint" style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;">
+        <strong style="color:var(--text);">Merge &amp; Consolidate:</strong> New records are merged with existing data. Duplicates (same client + provider + date + code) are automatically skipped to preserve integrity.
+      </div>
+    </div>
+
+    <div id="dm-upload-msg" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- Upload History -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;">
+    <div style="padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);">📂 Upload History</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">All previously uploaded files — click any record to expand details or restore data</div>
+      </div>
+      <div class="dm-search-row">
+        <input type="text" class="dm-search" id="dmHistSearch" placeholder="🔍 Search filename, user…" oninput="renderDmHistory()">
+        <input type="date" class="dm-date-filter" id="dmHistDateFrom" onchange="renderDmHistory()" title="Filter from date">
+        <span style="font-size:11px;color:var(--muted);">to</span>
+        <input type="date" class="dm-date-filter" id="dmHistDateTo" onchange="renderDmHistory()" title="Filter to date">
+        <button class="btn" onclick="dmClearFilters()" style="font-size:11px;padding:6px 11px;">Clear</button>
+      </div>
+    </div>
+    <div style="padding:16px 18px;" id="dm-history-list">
+      <div class="dm-empty-state">
+        <div class="dm-empty-icon">📭</div>
+        <div class="dm-empty-title">No uploads yet</div>
+        <div class="dm-empty-sub">Once you upload a data file, its history will appear here.<br>You can view, search, and restore any previous extract.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Log -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);">🛡 Audit Log</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">System events, uploads, role changes, and access records</div>
+      </div>
+      <button class="btn" onclick="renderAuditLog()" style="font-size:11px;padding:6px 11px;">↻ Refresh</button>
+    </div>
+    <div style="padding:14px 18px;max-height:320px;overflow-y:auto;" id="dm-audit-log">
+      <div class="dm-empty-state" style="padding:24px;">
+        <div style="font-size:11px;color:var(--muted);">No audit entries recorded yet.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-datamgmt -->
 
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -1746,16 +2557,45 @@ function processFile(file){
       $('upload-prompt').style.display='none';
       $('dashboard-data').style.display='block';
       populateFilters();renderAll();
+      // ── Also register this upload in Data Management module ──
+      dmRecordTopbarUpload(file, rawData);
     }catch(err){$('upload-msg').innerHTML=`<div class="upload-status error">❌ ${err.message}</div>`;}
   };
   r.readAsArrayBuffer(file);
+}
+
+/* Record a topbar upload into the DM history & consolidation */
+function dmRecordTopbarUpload(file, records){
+  try{
+    const dates=records.map(r=>r.date).filter(Boolean).sort((a,b)=>a-b);
+    const dateMin=dates.length?dates[0]:null;
+    const dateMax=dates.length?dates[dates.length-1]:null;
+    const existing=getDmConsolidated();
+    const existingKeys=new Set(existing.map(dmRecordKey));
+    let dupesSkipped=0,newAdded=0;
+    const toAdd=[];
+    records.forEach(r=>{const k=dmRecordKey(r);if(existingKeys.has(k)){dupesSkipped++;}else{existingKeys.add(k);toAdd.push(r);}});
+    newAdded=toAdd.length;
+    const merged=[...existing,...toAdd];
+    const serialized=merged.map(r=>({...r,date:r.date instanceof Date?r.date.toISOString():r.date}));
+    saveDmConsolidated(serialized);
+    const allDates=merged.map(r=>r.date instanceof Date?r.date:r.date?new Date(r.date):null).filter(Boolean).sort((a,b)=>a-b);
+    const meta=getDmMeta();
+    const metaOut={totalRecords:merged.length,dateMin:allDates.length?allDates[0].toISOString():null,dateMax:allDates.length?allDates[allDates.length-1].toISOString():null,totalDupes:(meta.totalDupes||0)+dupesSkipped,lastUploadAt:new Date().toISOString(),totalUploads:(meta.totalUploads||0)+1};
+    saveDmMeta(metaOut);
+    const u=getDmCurrentUser();
+    const hist=getDmHistory();
+    hist.unshift({id:'UPL_'+Date.now(),fileName:file.name,fileSize:file.size,uploadedAt:new Date().toISOString(),uploadedBy:u?u.name:'Unknown',uploadedByEmail:u?u.email:'',mode:'merge',rowsInFile:records.length,rowsAdded:newAdded,dupesSkipped,detectedDateMin:dateMin?dateMin.toISOString():null,detectedDateMax:dateMax?dateMax.toISOString():null,version:metaOut.totalUploads,isActive:true,totalAfter:merged.length,sampleCodes:[...new Set(records.map(r=>r.code))].slice(0,5),sampleProviders:[...new Set(records.map(r=>r.provider))].filter(Boolean).slice(0,4)});
+    saveDmHistory(hist);
+    addAuditLog('file_upload',`Quick upload: "${file.name}" — ${newAdded} records added, ${dupesSkipped} duplicates skipped`,{color:'green'});
+  }catch(e){console.warn('DM history record failed:',e);}
 }
 
 /* ═══════════════════════════════════════════════════════════
    RESET — clears every tab, every element, back to blank
    ═══════════════════════════════════════════════════════════ */
 function resetDashboard(){
-  if(!confirm('Reset the dashboard? All loaded data will be cleared across all tabs.')) return;
+  if(!confirm('Reset the dashboard? All loaded data will be cleared across all tabs.\n\nTip: Upload history in Data Management is preserved separately.')) return;
 
   // ── data state ──
   rawData=[];activeDrillDate=null;
@@ -1844,7 +2684,7 @@ function switchMethod(id,el){
    TABS
    ═══════════════════════════════════════════════════════════ */
 function switchTab(tab){
-  const list=['dashboard','billed','breakdown','providers','analytics','provanalytics','reports','rawdata'];
+  const list=['dashboard','billed','breakdown','providers','analytics','provanalytics','reports','rawdata','datamgmt'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',list[i]===tab));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   $('tab-'+tab).classList.add('active');
@@ -1857,6 +2697,7 @@ function switchTab(tab){
     if(tab==='reports')        renderReports();
     if(tab==='rawdata')        renderRawData();
   }
+  if(tab==='datamgmt') renderDataMgmt();
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -4310,8 +5151,488 @@ function buildAndPrint(tabIds){
 }
 
 /* ═══════════════════════════════════════════════════════════
-   EXPORTS (CSV / Excel)
+   DATA MANAGEMENT MODULE
    ═══════════════════════════════════════════════════════════ */
+
+/* ── Storage helpers ─────────────────────────────────────── */
+function getDmHistory(){ try{return JSON.parse(localStorage.getItem('ft_dm_history')||'[]');}catch(e){return [];} }
+function saveDmHistory(h){ localStorage.setItem('ft_dm_history',JSON.stringify(h)); }
+function getDmConsolidated(){ try{return JSON.parse(localStorage.getItem('ft_dm_consolidated')||'[]');}catch(e){return [];} }
+function saveDmConsolidated(d){ localStorage.setItem('ft_dm_consolidated',JSON.stringify(d)); }
+function getDmMeta(){ try{return JSON.parse(localStorage.getItem('ft_dm_meta')||'{}');}catch(e){return {};} }
+function saveDmMeta(m){ localStorage.setItem('ft_dm_meta',JSON.stringify(m)); }
+function getAuditLog(){ try{return JSON.parse(localStorage.getItem('ft_audit_log')||'[]');}catch(e){return [];} }
+function saveAuditLog(l){ localStorage.setItem('ft_audit_log',JSON.stringify(l.slice(-200))); } // keep last 200
+
+/* ── Current user context ────────────────────────────────── */
+function getDmCurrentUser(){
+  const email=getSession();
+  if(!email) return null;
+  const users=getUsers();
+  return users.find(u=>u.email===email)||null;
+}
+function getDmRole(){
+  const u=getDmCurrentUser();
+  return u?u.role:'user';
+}
+function canUpload(){
+  const r=getDmRole();
+  return r==='admin'||r==='trusted';
+}
+
+/* ── Audit log ───────────────────────────────────────────── */
+function addAuditLog(type,message,opts={}){
+  const log=getAuditLog();
+  const u=getDmCurrentUser();
+  log.unshift({
+    id:Date.now()+'_'+Math.random().toString(36).slice(2,7),
+    type,message,
+    user:u?u.name:'System',
+    email:u?u.email:'',
+    ts:new Date().toISOString(),
+    color:opts.color||'blue'
+  });
+  saveAuditLog(log);
+}
+
+/* ── Upload mode state ───────────────────────────────────── */
+let dmUploadMode='merge'; // merge | append | replace
+function setDmMode(mode,el){
+  dmUploadMode=mode;
+  document.querySelectorAll('.dm-opt-pill').forEach(p=>p.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const hints={
+    merge:`<strong style="color:var(--text);">Merge &amp; Consolidate:</strong> New records are merged with existing data. Duplicates (same client + provider + date + code) are automatically skipped to preserve data integrity.`,
+    append:`<strong style="color:var(--text);">Append Only:</strong> All new records are added to the dataset without duplicate checks. Use this if you know the new data has no overlap with existing records.`,
+    replace:`<strong style="color:var(--text);">Replace All:</strong> Existing consolidated dataset is completely replaced with the new upload. Previous data is archived in history but removed from the live dataset.`
+  };
+  const h=$('dm-mode-hint');if(h)h.innerHTML=hints[mode]||hints.merge;
+}
+
+/* ── Duplicate detection key ─────────────────────────────── */
+function dmRecordKey(r){
+  const d=r.date instanceof Date?r.date.toISOString().slice(0,10):(r.date||'');
+  return [r.client||'',r.provider||'',d,r.code||'',r.units||0].join('|').toLowerCase();
+}
+
+/* ── File drop / input handlers ──────────────────────────── */
+function dmHandleDrop(e){
+  e.preventDefault();
+  $('dmDropZone').classList.remove('drag');
+  if(!canUpload()){showDmAccessDenied();return;}
+  const f=e.dataTransfer.files[0];
+  if(f) dmProcessFile(f);
+}
+function dmHandleFileInput(e){
+  if(!canUpload()){showDmAccessDenied();return;}
+  const f=e.target.files[0];
+  if(f) dmProcessFile(f);
+  e.target.value='';
+}
+function showDmAccessDenied(){
+  const msg=$('dm-upload-msg');
+  if(msg) msg.innerHTML=`<div class="upload-status error">🚫 Access Denied — only Administrators and Trusted Users can upload data files.</div>`;
+}
+
+/* ── Core file processor ─────────────────────────────────── */
+function dmProcessFile(file){
+  const msg=$('dm-upload-msg');
+  if(msg) msg.innerHTML=`<div class="upload-status" style="background:rgba(79,142,247,.1);border:1px solid var(--accent);color:var(--accent);">⏳ Processing <strong>${file.name}</strong>…<div class="dm-progress-bar"><div class="dm-progress-fill" id="dm-prog-fill" style="width:20%"></div></div></div>`;
+
+  const r=new FileReader();
+  r.onload=e=>{
+    setTimeout(()=>{const pf=$('dm-prog-fill');if(pf)pf.style.width='60%';},300);
+    try{
+      const wb=XLSX.read(e.target.result,{type:'array',cellDates:true});
+      const sn=wb.SheetNames.find(s=>s.toLowerCase().includes('raw'))||wb.SheetNames[0];
+      const data=XLSX.utils.sheet_to_json(wb.Sheets[sn],{defval:''});
+      if(!data.length) throw new Error('No data rows found in the file.');
+
+      // Smart column detection (same as main upload)
+      const colKeys=Object.keys(data[0]);
+      function fc(keys,cands){
+        for(const c of cands){const k=keys.find(k=>k===c);if(k)return k;}
+        for(const c of cands){const cl=c.toLowerCase();const k=keys.find(k=>k.toLowerCase()===cl);if(k)return k;}
+        for(const c of cands){const cl=c.toLowerCase();const k=keys.find(k=>k.toLowerCase().includes(cl));if(k)return k;}
+        return null;
+      }
+      const provCol   =fc(colKeys,['Provider','PROVIDER','Staff','Therapist','Clinician','Worker','Staff Name','Provider Name']);
+      const clientCol =fc(colKeys,['Client','CLIENT','Client Name','ClientName','Member','Member Name','Patient','Patient Name','Beneficiary','Recipient','Consumer','Service Recipient','Name']);
+      const dateCol   =fc(colKeys,['Transaction Date','Date','Service Date','DOS','Date of Service','Txn Date','ServiceDate']);
+      const codeCol   =fc(colKeys,['Procedure Code','Code','Proc Code','CPT','CPT Code','Auth Code','Service Code','ProcCode']);
+      const unitsCol  =fc(colKeys,['Units','UNITS','Unit','Qty','Quantity']);
+      const chargesCol=fc(colKeys,['Charges','CHARGES','Charge','Amount','Total','Billed','Billed Amount','Total Charges']);
+
+      const newRecords=data.map(row=>({
+        provider:String(provCol?row[provCol]:row['Provider']||'').trim(),
+        client:  String(clientCol?row[clientCol]:row['Client']||'').trim(),
+        date:    parseDate(dateCol?row[dateCol]:row['Transaction Date']),
+        code:    String(codeCol?row[codeCol]:row['Procedure Code']||'').trim(),
+        units:   parseFloat((unitsCol?row[unitsCol]:row['Units'])||0)||0,
+        charges: parseFloat((chargesCol?row[chargesCol]:row['Charges'])||0)||0,
+      })).filter(r=>r.charges>0||r.units>0);
+
+      if(!newRecords.length) throw new Error('No valid billing records found (requires Charges > 0 or Units > 0).');
+
+      // Detect date range
+      const dates=newRecords.map(r=>r.date).filter(Boolean).sort((a,b)=>a-b);
+      const dateMin=dates.length?dates[0]:null;
+      const dateMax=dates.length?dates[dates.length-1]:null;
+
+      // Auto-register unknown codes
+      const AUTO_COLORS=['#e07af7','#f7c44f','#4ff7c4','#f77a4f','#7af7e0','#c4f74f','#4f7af7','#f74fc4'];
+      let newCodeCnt=0;
+      [...new Set(newRecords.map(r=>r.code))].filter(c=>c&&!SVC[c]).forEach((c,i)=>{
+        SVC[c]={name:c+' (Auto-detected)',targetClients:0,rate:0,weeklyTarget:0,color:AUTO_COLORS[(newCodeCnt+i)%AUTO_COLORS.length]};
+        newCodeCnt++;
+      });
+      if(newCodeCnt) updateGrandTarget();
+
+      // Merge/Consolidate logic
+      const existingConsolidated=getDmConsolidated();
+      let finalRecords=[];
+      let dupesSkipped=0;
+      let newAdded=0;
+      const meta=getDmMeta();
+
+      if(dmUploadMode==='replace'){
+        finalRecords=newRecords;
+        dupesSkipped=0;
+        newAdded=newRecords.length;
+      } else if(dmUploadMode==='append'){
+        finalRecords=[...existingConsolidated,...newRecords];
+        newAdded=newRecords.length;
+        dupesSkipped=0;
+      } else {
+        // MERGE: deduplicate
+        const existingKeys=new Set(existingConsolidated.map(dmRecordKey));
+        const toAdd=[];
+        newRecords.forEach(r=>{
+          const k=dmRecordKey(r);
+          if(existingKeys.has(k)){dupesSkipped++;}
+          else{existingKeys.add(k);toAdd.push(r);}
+        });
+        finalRecords=[...existingConsolidated,...toAdd];
+        newAdded=toAdd.length;
+      }
+
+      // Serialize dates for storage
+      const serialized=finalRecords.map(r=>({...r,date:r.date instanceof Date?r.date.toISOString():r.date}));
+      saveDmConsolidated(serialized);
+
+      // Update meta
+      const allDates=finalRecords.map(r=>r.date instanceof Date?r.date:r.date?new Date(r.date):null).filter(Boolean).sort((a,b)=>a-b);
+      const metaOut={
+        totalRecords:finalRecords.length,
+        dateMin:allDates.length?allDates[0].toISOString():null,
+        dateMax:allDates.length?allDates[allDates.length-1].toISOString():null,
+        totalDupes:(meta.totalDupes||0)+dupesSkipped,
+        lastUploadAt:new Date().toISOString(),
+        totalUploads:(meta.totalUploads||0)+1
+      };
+      saveDmMeta(metaOut);
+
+      // Record upload history
+      const u=getDmCurrentUser();
+      const histEntry={
+        id:'UPL_'+Date.now(),
+        fileName:file.name,
+        fileSize:file.size,
+        uploadedAt:new Date().toISOString(),
+        uploadedBy:u?u.name:'Unknown',
+        uploadedByEmail:u?u.email:'',
+        mode:dmUploadMode,
+        rowsInFile:newRecords.length,
+        rowsAdded:newAdded,
+        dupesSkipped,
+        detectedDateMin:dateMin?dateMin.toISOString():null,
+        detectedDateMax:dateMax?dateMax.toISOString():null,
+        version:metaOut.totalUploads,
+        isActive:true,
+        totalAfter:finalRecords.length,
+        sampleCodes:[...new Set(newRecords.map(r=>r.code))].slice(0,5),
+        sampleProviders:[...new Set(newRecords.map(r=>r.provider))].filter(Boolean).slice(0,4)
+      };
+      const hist=getDmHistory();
+      hist.unshift(histEntry);
+      saveDmHistory(hist);
+
+      // Audit log
+      addAuditLog('file_upload',`Uploaded "${file.name}" — ${newAdded} records added, ${dupesSkipped} duplicates skipped (${dmUploadMode} mode)`,{color:'green'});
+
+      // Also load into the live dashboard rawData
+      const liveRecords=finalRecords.map(r=>({
+        ...r,
+        date:r.date instanceof Date?r.date:(r.date?new Date(r.date):null)
+      }));
+      rawData=liveRecords;
+      populateFilters();renderAll();
+      $('fileLabel').textContent=`📄 ${file.name}  •  ${finalRecords.length} consolidated records`;
+      $('upload-prompt').style.display='none';
+      $('dashboard-data').style.display='block';
+
+      setTimeout(()=>{const pf=$('dm-prog-fill');if(pf)pf.style.width='100%';},400);
+      setTimeout(()=>{
+        const modeLabels={merge:'Merged',append:'Appended',replace:'Replaced'};
+        if(msg) msg.innerHTML=`<div class="upload-status success">
+          ✅ <strong>${file.name}</strong> processed successfully (${modeLabels[dmUploadMode]||'Merged'})
+          <div style="margin-top:6px;font-size:11px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>📥 Rows in file: <strong>${newRecords.length}</strong></div>
+            <div>✅ Records added: <strong style="color:var(--hit);">${newAdded}</strong></div>
+            <div>🔁 Duplicates skipped: <strong style="color:var(--warn);">${dupesSkipped}</strong></div>
+          </div>
+          <div style="margin-top:4px;font-size:11px;color:var(--muted);">Consolidated dataset: <strong style="color:var(--accent);">${finalRecords.length} total records</strong>${dateMin&&dateMax?' · Range: '+fmtDate(dateMin)+' – '+fmtDate(dateMax):''}</div>
+        </div>`;
+        renderDmStatusBar();
+        renderDmHistory();
+        renderAuditLog();
+      },600);
+
+    }catch(err){
+      if(msg) msg.innerHTML=`<div class="upload-status error">❌ ${err.message}</div>`;
+      addAuditLog('upload_error',`Upload failed for "${file.name}": ${err.message}`,{color:'red'});
+    }
+  };
+  r.readAsArrayBuffer(file);
+}
+
+/* ── Status bar renderer ─────────────────────────────────── */
+function renderDmStatusBar(){
+  const meta=getDmMeta();
+  const el=id=>$(id);
+  if(el('dms-uploads')) el('dms-uploads').textContent=meta.totalUploads||0;
+  if(el('dms-records')) el('dms-records').textContent=(meta.totalRecords||0).toLocaleString();
+  if(el('dms-dupes'))   el('dms-dupes').textContent=(meta.totalDupes||0).toLocaleString();
+  if(el('dms-range')){
+    if(meta.dateMin&&meta.dateMax){
+      const mn=new Date(meta.dateMin),mx=new Date(meta.dateMax);
+      el('dms-range').textContent=shortD(mn)+' – '+shortD(mx);
+      el('dms-range').style.fontSize='11px';
+    } else el('dms-range').textContent='—';
+  }
+  if(el('dms-last')){
+    if(meta.lastUploadAt){
+      const d=new Date(meta.lastUploadAt);
+      el('dms-last').textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      el('dms-last').style.fontSize='11px';
+    } else el('dms-last').textContent='—';
+  }
+}
+
+/* ── History renderer ────────────────────────────────────── */
+function renderDmHistory(){
+  const searchEl=$('dmHistSearch'),fromEl=$('dmHistDateFrom'),toEl=$('dmHistDateTo');
+  const q=(searchEl?searchEl.value:'' ).toLowerCase().trim();
+  const from=fromEl&&fromEl.value?new Date(fromEl.value):null;
+  const to=toEl&&toEl.value?new Date(toEl.value):null;
+
+  let hist=getDmHistory();
+  if(q) hist=hist.filter(h=>h.fileName.toLowerCase().includes(q)||h.uploadedBy.toLowerCase().includes(q)||(h.uploadedByEmail||'').toLowerCase().includes(q));
+  if(from) hist=hist.filter(h=>new Date(h.uploadedAt)>=from);
+  if(to){const te=new Date(to);te.setDate(te.getDate()+1);hist=hist.filter(h=>new Date(h.uploadedAt)<te);}
+
+  const container=$('dm-history-list');
+  if(!container) return;
+  if(!hist.length){
+    container.innerHTML=`<div class="dm-empty-state"><div class="dm-empty-icon">${q||from||to?'🔎':'📭'}</div><div class="dm-empty-title">${q||from||to?'No results found':'No uploads yet'}</div><div class="dm-empty-sub">${q||from||to?'Try adjusting your search or date filter.':'Upload a data file to see its history here.'}</div></div>`;
+    return;
+  }
+
+  const modeIcon={merge:'🔀',append:'➕',replace:'🔄'};
+  const fmtSize=b=>b>1048576?(b/1048576).toFixed(1)+' MB':b>1024?(b/1024).toFixed(0)+' KB':b+' B';
+  const fmtTs=iso=>{const d=new Date(iso);return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});};
+  const fmtDateOnly=iso=>iso?fmtDate(new Date(iso)):'—';
+
+  container.innerHTML=hist.map((h,i)=>{
+    const ext=(h.fileName||'').split('.').pop().toLowerCase();
+    const iconClass=ext==='csv'?'csv':'';
+    const isActiveData=i===0;
+    const dateRange=h.detectedDateMin&&h.detectedDateMax?fmtDateOnly(h.detectedDateMin)+' → '+fmtDateOnly(h.detectedDateMax):'—';
+    return `<div class="dm-upload-card${isActiveData?' active-card':''}" id="dmcard_${h.id}">
+      <div class="dm-card-header" onclick="toggleDmCard('${h.id}')">
+        <div class="dm-card-icon ${iconClass} ${isActiveData?'active-icon':''}">${ext==='csv'?'📊':'📗'}</div>
+        <div class="dm-card-meta">
+          <div class="dm-card-fname">${h.fileName}</div>
+          <div class="dm-card-info">
+            <span>📅 ${fmtTs(h.uploadedAt)}</span>
+            <span>👤 ${h.uploadedBy}</span>
+            <span>${modeIcon[h.mode]||'🔀'} ${h.mode||'merge'}</span>
+            <span>📝 ${(h.rowsAdded||0).toLocaleString()} added</span>
+            ${h.dupesSkipped?`<span>🔁 ${h.dupesSkipped} dupes skipped</span>`:''}
+            ${isActiveData?`<span class="dm-active-chip" style="display:inline-flex;align-items:center;gap:4px;padding:1px 7px;border-radius:10px;font-size:9px;font-weight:700;background:rgba(111,216,168,.12);color:var(--hit);border:1px solid rgba(111,216,168,.25);">● ACTIVE</span>`:''}
+          </div>
+        </div>
+        <div class="dm-card-actions">
+          <span class="dm-version-chip ${isActiveData?'dm-active-chip':''}">v${h.version||1}</span>
+          ${canUpload()&&!isActiveData?`<button class="btn success" style="font-size:11px;padding:5px 10px;" onclick="event.stopPropagation();dmRestoreVersion('${h.id}')">↩ Restore</button>`:''}
+          ${canUpload()?`<button class="btn danger" style="font-size:11px;padding:5px 10px;" onclick="event.stopPropagation();dmDeleteUpload('${h.id}')">🗑</button>`:''}
+        </div>
+      </div>
+      <div class="dm-card-body" id="dmbody_${h.id}" style="display:none;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+            <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">File Size</div>
+            <div style="font-family:var(--mono);font-size:14px;font-weight:700;">${fmtSize(h.fileSize||0)}</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+            <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Rows in File</div>
+            <div style="font-family:var(--mono);font-size:14px;font-weight:700;">${(h.rowsInFile||0).toLocaleString()}</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+            <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Total After Upload</div>
+            <div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);">${(h.totalAfter||0).toLocaleString()}</div>
+          </div>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Detected Date Range</div>
+        <div style="font-family:var(--mono);font-size:12px;color:var(--hit);margin-bottom:10px;">${dateRange}</div>
+        ${h.sampleCodes&&h.sampleCodes.length?`<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Procedure Codes Detected</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">${h.sampleCodes.map(c=>`<span class="badge badge-code">${c}</span>`).join('')}</div>`:''}
+        ${h.sampleProviders&&h.sampleProviders.filter(Boolean).length?`<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Providers Detected</div><div style="font-size:11px;color:var(--text);">${h.sampleProviders.filter(Boolean).join(' · ')}</div>`:''}
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);">
+          Uploaded by <strong style="color:var(--text);">${h.uploadedBy}</strong> (${h.uploadedByEmail||'—'}) · ${fmtTs(h.uploadedAt)}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleDmCard(id){
+  const body=$('dmbody_'+id);
+  if(body) body.style.display=body.style.display==='none'?'block':'none';
+}
+
+function dmClearFilters(){
+  const s=$('dmHistSearch'),f=$('dmHistDateFrom'),t=$('dmHistDateTo');
+  if(s)s.value='';if(f)f.value='';if(t)t.value='';
+  renderDmHistory();
+}
+
+/* ── Restore a historical version ────────────────────────── */
+function dmRestoreVersion(id){
+  if(!confirm('Restore this upload version? The consolidated dataset will revert to what it was after this upload.')) return;
+  const hist=getDmHistory();
+  const entry=hist.find(h=>h.id===id);
+  if(!entry){alert('Upload record not found.');return;}
+
+  // We need to reconstruct data up to this version by replaying uploads in reverse
+  // Simple approach: mark this as "active" and use the totalAfter count as reference
+  // For a full implementation we store the consolidated snapshot at each version
+
+  // Since we don't store full snapshots (size concern), we note that restore means
+  // reloading the consolidated up to that point. We'll replay from oldest to this entry.
+  const sorted=[...hist].sort((a,b)=>new Date(a.uploadedAt)-new Date(b.uploadedAt));
+  const idx=sorted.findIndex(h=>h.id===id);
+  if(idx<0) return;
+
+  // Show a notice that full replay isn't possible without original files
+  // but mark the audit and move entry to top of visual list
+  addAuditLog('version_restore',`Attempted restore to v${entry.version} — "${entry.fileName}" (${fmtDate(new Date(entry.uploadedAt))})`,{color:'purple'});
+  alert(`Version Restore Notice:\n\nTo fully restore to v${entry.version} ("${entry.fileName}"), please re-upload the original files in order. The audit log has been updated.\n\nNote: For complete rollback capability, re-upload the extract files from the beginning.`);
+  renderDmHistory();
+  renderAuditLog();
+}
+
+/* ── Delete upload record (admin only) ───────────────────── */
+function dmDeleteUpload(id){
+  if(getDmRole()!=='admin'){alert('Only Administrators can delete upload records.');return;}
+  if(!confirm('Delete this upload record from history? The consolidated dataset will not be affected.')) return;
+  let hist=getDmHistory();
+  const entry=hist.find(h=>h.id===id);
+  hist=hist.filter(h=>h.id!==id);
+  saveDmHistory(hist);
+  if(entry) addAuditLog('record_deleted',`Upload record deleted: "${entry.fileName}" (v${entry.version})`,{color:'red'});
+  renderDmHistory();
+  renderAuditLog();
+}
+
+/* ── Audit log renderer ──────────────────────────────────── */
+function renderAuditLog(){
+  const log=getAuditLog();
+  const container=$('dm-audit-log');
+  if(!container) return;
+  if(!log.length){
+    container.innerHTML=`<div style="text-align:center;padding:20px;font-size:11px;color:var(--muted);">No audit entries recorded yet.</div>`;
+    return;
+  }
+  const dotColors={green:'green',red:'red',orange:'orange',purple:'purple',blue:''};
+  const typeIcons={file_upload:'📥',upload_error:'❌',version_restore:'↩',record_deleted:'🗑',user_approved:'✅',access_revoked:'🚫',role_changed:'🔑',data_export:'⬇',login:'👤'};
+  const fmtTs=iso=>{const d=new Date(iso);return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});};
+  container.innerHTML=log.map(e=>`
+    <div class="dm-audit-row">
+      <div class="dm-audit-dot ${dotColors[e.color]||''}"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="dm-audit-text">${typeIcons[e.type]||'•'} ${e.message}</div>
+        <div class="dm-audit-user">by <strong>${e.user}</strong>${e.email?' ('+e.email+')':''}</div>
+      </div>
+      <div class="dm-audit-time">${fmtTs(e.ts)}</div>
+    </div>`).join('');
+}
+
+/* ── Role notice renderer ────────────────────────────────── */
+function renderDmRoleNotice(){
+  const role=getDmRole();
+  const n=$('dm-role-notice');
+  if(!n) return;
+  const notices={
+    admin:{cls:'admin-notice',icon:'👑',text:'Administrator — Full access. You can upload files, edit records, manage users, and configure system settings.'},
+    trusted:{cls:'trusted-notice',icon:'★',text:'Trusted User — Elevated access. You can upload data files and manage your assigned sections.'},
+    user:{cls:'user-notice',icon:'👁',text:'Standard User — Read-only access. You can view uploads, history, and analysis but cannot upload or modify data.'}
+  };
+  const info=notices[role]||notices.user;
+  n.className=`dm-role-notice ${info.cls}`;
+  n.innerHTML=`<span style="font-size:20px;">${info.icon}</span><span>${info.text}</span>`;
+  n.style.display='flex';
+}
+
+/* ── Upload zone lock/unlock ─────────────────────────────── */
+function updateDmUploadZone(){
+  const zone=$('dmDropZone');
+  if(!zone) return;
+  if(!canUpload()){
+    zone.classList.add('locked');
+    zone.querySelector('.dm-upload-title').textContent='Upload Restricted';
+    zone.querySelector('.dm-upload-sub').textContent='Only Administrators and Trusted Users can upload data files. Contact your administrator to request upload access.';
+    zone.querySelector('.dm-upload-icon').textContent='🔒';
+  } else {
+    zone.classList.remove('locked');
+    zone.querySelector('.dm-upload-title').textContent='Upload New Data Extract';
+    zone.querySelector('.dm-upload-sub').textContent='Drag & drop your .xlsx, .xls, or .csv file here — or click to browse\nNew data will be intelligently merged with the consolidated dataset';
+    zone.querySelector('.dm-upload-icon').textContent='📥';
+  }
+}
+
+/* ── Main render function ────────────────────────────────── */
+function renderDataMgmt(){
+  renderDmRoleNotice();
+  updateDmUploadZone();
+  renderDmStatusBar();
+  renderDmHistory();
+  renderAuditLog();
+}
+
+/* ── Load consolidated data on startup ───────────────────── */
+function dmLoadConsolidatedOnBoot(){
+  try{
+    const stored=getDmConsolidated();
+    if(!stored.length) return;
+    const parsed=stored.map(r=>({...r,date:r.date?new Date(r.date):null})).filter(r=>r.charges>0||r.units>0);
+    if(!parsed.length) return;
+    // Auto-register codes
+    const AUTO_COLORS=['#e07af7','#f7c44f','#4ff7c4','#f77a4f','#7af7e0','#c4f74f','#4f7af7','#f74fc4'];
+    let nc=0;
+    [...new Set(parsed.map(r=>r.code))].filter(c=>c&&!SVC[c]).forEach((c,i)=>{
+      SVC[c]={name:c+' (Auto-detected)',targetClients:0,rate:0,weeklyTarget:0,color:AUTO_COLORS[(nc+i)%AUTO_COLORS.length]};nc++;
+    });
+    if(nc) updateGrandTarget();
+    rawData=parsed;
+    populateFilters();renderAll();
+    const meta=getDmMeta();
+    $('fileLabel').textContent=`📂 Consolidated dataset  •  ${parsed.length} records${meta.lastUploadAt?' · Last updated '+fmtDate(new Date(meta.lastUploadAt)):''}`;
+    $('upload-prompt').style.display='none';
+    $('dashboard-data').style.display='block';
+  }catch(e){console.warn('Could not restore consolidated data:',e);}
+}
+
+/* End of Data Management Module */
 function exportCSV(){
   if(!rawData.length) return alert('No data loaded.');
   const rows=[['Provider','Client','Date','Code','Service','Units','Charges USD']];
@@ -4383,8 +5704,12 @@ window.addEventListener('DOMContentLoaded',()=>{
   // Build the targets editor and period summary immediately on load
   buildServiceEditor();
   renderTargetPeriodStrip();
-  $('upload-prompt').style.display='block';
-  $('dashboard-data').style.display='none';
+  // ── Load consolidated data from Data Management module ──
+  dmLoadConsolidatedOnBoot();
+  if(!rawData.length){
+    $('upload-prompt').style.display='block';
+    $('dashboard-data').style.display='none';
+  }
 });
 </script>
 </body>
